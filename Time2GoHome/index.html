@@ -1,0 +1,36 @@
+<html>
+<head>
+    <title>Time 2 go home</title>
+    <script src="http://code.jquery.com/jquery-latest.min.js"
+            type="text/javascript"></script>
+</head>
+<body>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".calculator").bind('input propertychange', function () {
+
+                var nums = $('.calculator').val().split('\n');
+                nums2 = $.grep(nums, function (num, index) {
+                    return num.match(/[0-9][0-9]:[0-9][0-9].*/g);
+                });
+
+                if (nums2.length == 3) {
+                    var a = {};
+                    for (var i = 0; i < nums2.length; i++) {
+                        a[i] = nums2[i].split(':');
+                    }
+
+                    endhour = 7 * 60 + 36 - ((a[1][0] * 60 + +a[1][1]) - (a[0][0] * 60 + +a[0][1])) + (a[2][0] * 60 + +a[2][1])
+                    $("#output").html(Math.floor(endhour / 60) + ":" + endhour % 60);
+
+                    $("#output").show();
+                }
+            });
+        });
+    </script>
+    <textarea class="calculator" rows="11" cols="50"></textarea>
+    <div id=output style="display:none;font-weight: bold">
+    </div>
+</body>
+</html>
