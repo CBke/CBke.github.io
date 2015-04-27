@@ -3,6 +3,15 @@
     <title>Time 2 go home</title>
     <script src="http://code.jquery.com/jquery-latest.min.js"
             type="text/javascript"></script>
+    <style>
+div.red {
+    color: red;
+}
+
+div.blue {            
+    color: green;
+} 
+</style>
 </head>
 <body>
 
@@ -32,10 +41,24 @@
                     $("#output").show();
                 }
             });
+            setInterval(function() {
+              var d = new Date();
+              var endhour = {};
+              endhour = $("#output").html().split(':');
+              ttl = (endhour[0]*60 + +endhour[1])-(d.getHours() *60 + +d.getMinutes());
+            
+              if (ttl > 0 )
+                $("#tminus").attr('class','red');
+              else
+                $("#tminus").attr('class','blue');
+              
+               $("#tminus").html("T- " + Math.floor(ttl / 60) + ":" + zeroPad((ttl % 60), 2));
+            }, 1000);
         });
     </script>
     <textarea class="calculator" rows="11" cols="50"></textarea>
     <div id=output style="display:none;font-weight: bold">
     </div>
+    <div id=tminus>
 </body>
 </html>
