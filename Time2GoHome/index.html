@@ -7,6 +7,11 @@
 <body>
 
     <script type="text/javascript">
+    
+        function zeroPad(num, places) {
+          var zero = places - num.toString().length + 1;
+          return Array(+(zero > 0 && zero)).join("0") + num;
+        }
         $(document).ready(function () {
             $(".calculator").bind('input propertychange', function () {
 
@@ -22,7 +27,7 @@
                     }
 
                     endhour = 7 * 60 + 36 + (a[0][0] * 60 + +a[0][1]) + Math.max(30, ((a[2][0] * 60 + +a[2][1]) - (a[1][0] * 60 + +a[1][1])));
-                    $("#output").html(Math.floor(endhour / 60) + ":" + endhour % 60);
+                    $("#output").html(Math.floor(endhour / 60) + ":" + zeroPad(endhour % 60, 2));
 
                     $("#output").show();
                 }
