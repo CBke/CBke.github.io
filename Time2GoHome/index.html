@@ -22,6 +22,7 @@ div.blue {
           return Array(+(zero > 0 && zero)).join("0") + num;
         }
         $(document).ready(function () {
+            $(".calculator").focus();
             $(".calculator").bind('input propertychange', function () {
 
                 var nums = $('.calculator').val().split('\n');
