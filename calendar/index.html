@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title></title>
+    <style>
+        body {
+            margin: 38px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+        }
+    </style>
+    <link rel="stylesheet" href="styles/jquery.json-viewer.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/alasql/0.2.1/alasql.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <script src="scripts/jquery.json-viewer.js"></script>
+
+
+    <script>
+        $(function () {
+            $(".exec").click(function () {
+                console.log("Clicked");
+
+                var textarea = $($(this).data("input"));
+                var logwindow = $($(this).data("output"));
+
+                var array = $.grep(textarea.val().split('\n'), function (value) {
+                    return !value.match(/^\ *--/i);
+                });
+                var a2 = array.join('').split(';');
+
+                $.each(a2, function (i, val) {
+                    if (val.replace(/\s/g, "") != "") {
+                        console.log(val);
+                        var res = alasql(val);
+                        if (typeof res === 'object') {
+                            logwindow.append($('<pre/>').jsonViewer(res));
+                        }
+                        console.log(res);
+                    }
+                });
+            });
+            $(".exec").click();
+            console.log("ready!");
+        });
+
+    </script>
+</head>
+<body>
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <textarea id="area1">
+                --
+                -- calculates the average years it takes to reuse a calendar in SQLite
+                --
+                -- Text encoding used: windows-1252
+                --
+                -- PRAGMA foreign_keys = off;
+                BEGIN TRANSACTION;
+
+                -- Table: Calendars
+                CREATE TABLE Calendars (
+                YEAR     INTEGER PRIMARY KEY,
+                LEAP     BOOLEAN,
+                STARTDAY STRING  CHECK (STARTDAY IS NULL OR
+                STARTDAY IN ('mon',
+                'tue',
+                'wed',
+                'thu',
+                'fri',
+                'sat',
+                'sun') )
+                );
+
+                -- Table: YEARS
+                CREATE TABLE YEARS (
+                YEAR          INTEGER,
+                NUMBEROFYEARS INTEGER DEFAULT (10)
+                );
+
+                INSERT INTO YEARS (
+                YEAR,
+                NUMBEROFYEARS
+                )
+                VALUES (
+                0,
+                9999
+                );
+
+                -- View: Calendars_Fill
+                CREATE VIEW Calendars_Fill AS
+                SELECT YEAR + range._ AS YEAR,
+                DATEDIFF(NEW Date((YEAR + range._ + 1), 1,1), NEW Date(YEAR + range._,1,1)) == 31622400000   AS LEAP,
+                CASE DAYOFWEEK(NEW Date(YEAR + range._,1,1)) WHEN 0 THEN 'sun' WHEN 1 THEN 'mon' WHEN 2 THEN 'tue' WHEN 3 THEN 'wed' WHEN 4 THEN 'thu' WHEN 5 THEN 'fri' ELSE 'sat' END AS STARTDAY
+                FROM
+                YEARS, RANGE(0,9999)as range
+                WHERE YEAR + range._ >= 0 AND
+                YEAR + range._ <= 9999 AND
+                range._ <= NUMBEROFYEARS
+                /*AND
+                NOT        EXISTS (
+                SELECT *
+                FROM Calendars
+                WHERE Calendars.YEAR = YEARS.YEAR + range._
+                )*/;
+
+                -- View: Calendars_Next
+                CREATE VIEW Calendars_Next AS
+                SELECT a.YEAR, MIN(b.YEAR) - YEAR  as yearstopass
+                FROM Calendars AS a, Calendars AS b
+                WHERE b.YEAR > a.YEAR
+                AND a.LEAP = b.LEAP
+                AND a.STARTDAY = b.STARTDAY
+                GROUP BY a.YEAR;
+
+
+                COMMIT TRANSACTION;
+
+                insert into Calendars select * from Calendars_Fill;
+
+                select MAX(yearstopass), MIN(yearstopass), AVG(yearstopass) from Calendars_Next where yearstopass > 0;
+                select LEAP IsLeapYear, STARTDAY StartDay, COUNT(*) GroupSize, GROUP_CONCAT(YEAR) Years from Calendars group by LEAP, STARTDAY;
+            </textarea>
+
+            <button class="exec" data-input="#area1" data-output="#mylog">Run Code</button>
+            <div id="mylog">
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
