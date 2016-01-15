@@ -99,8 +99,8 @@
                 -- View: Calendars_Fill
                 CREATE VIEW Calendars_Fill AS
                 SELECT YEAR + range._ AS YEAR,
-                DATEDIFF(NEW Date((YEAR + range._ + 1), 1,1), NEW Date(YEAR + range._,1,1)) == 31622400000   AS LEAP,
-                CASE DAYOFWEEK(NEW Date(YEAR + range._,1,1)) WHEN 0 THEN 'sun' WHEN 1 THEN 'mon' WHEN 2 THEN 'tue' WHEN 3 THEN 'wed' WHEN 4 THEN 'thu' WHEN 5 THEN 'fri' ELSE 'sat' END AS STARTDAY
+                DATEDIFF(NEW Date((YEAR + range._ + 1), 0,1), NEW Date(YEAR + range._,0,1)) == 31622400000   AS LEAP,
+                CASE DAYOFWEEK(NEW Date(YEAR + range._,0,1)) WHEN 0 THEN 'sun' WHEN 1 THEN 'mon' WHEN 2 THEN 'tue' WHEN 3 THEN 'wed' WHEN 4 THEN 'thu' WHEN 5 THEN 'fri' ELSE 'sat' END AS STARTDAY
                 FROM
                 YEARS, RANGE(0,9999)as range
                 WHERE YEAR + range._ >= 0 AND
