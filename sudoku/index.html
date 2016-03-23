@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <link rel="stylesheet" type="text/css" href="sudoku.css" media="screen" />
+    <script src="jquery-2.2.2.min.js" type="text/javascript">
+    </script>
+    <script src="sudoku.js" type="text/javascript">
+    </script>
+   
+  
+    <script>
+        $(function () {
+
+            FillBoard = function (Board, input) {
+                $(input).each(function (index, element) {
+
+                    var value = parseInt($(this).val());
+
+                    if ($.isNumeric(value)) {
+                        var x = index % 9;
+                        var y = parseInt(index / 9);
+                        Board.setItem(x, y, value);
+                    }
+
+                });
+            };
+
+            PrintBoard = function (Board, element) {
+                var table = $("<table class='board'></table>").insertBefore($(element));
+                for (var y = 0; y < Board.BoardDimetion() ; y++) {
+                    var tr = $("<tr></tr>").appendTo($(table));
+                    for (var x = 0; x < Board.BoardDimetion() ; x++)
+                        $("<td>" + Board.Item(x, y).PossibleValues() + "</td>").appendTo($(tr));
+                }
+            };
+
+
+            SolveBoard = function () {
+                var t0 = performance.now();
+
+                var myBoard = new Board(9);
+
+                FillBoard(myBoard, '#board :input');
+
+                myBoard.Resolve();
+
+                PrintBoard(myBoard, "#result");
+
+                var t1 = performance.now();
+                $(this).after("took " + (t1 - t0) + " milliseconds to solve.");
+
+            };
+
+
+            $('#solve').click(SolveBoard);
+
+        });
+    </script>
+    <title>Sudoku Solver</title>
+</head>
+<body>
+    <table class="board" id="board">
+        <tbody>
+            <tr>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+            </tr>
+            <tr>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+            </tr>
+            <tr>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+            </tr>
+            <tr>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+            </tr>
+            <tr>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+            </tr>
+            <tr>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+            </tr>
+            <tr>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+            </tr>
+            <tr>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+            </tr>
+            <tr>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+                <td><input></td>
+            </tr>
+        </tbody>
+    </table><button id="solve">solve</button>
+    <div id="result"></div>
+</body>
+</html>

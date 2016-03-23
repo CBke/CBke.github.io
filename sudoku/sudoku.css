@@ -1,0 +1,31 @@
+﻿table.board {
+    border-collapse: collapse;
+}
+
+    table.board tr td {
+        border: 1px solid #d3d3d3;
+        margin: 0px;
+        padding: 7px;
+    }
+
+        table.board tr td:nth-child(3n-3) {
+            border-right: 1px solid black;
+        }
+
+        table.board tr td:nth-child(3n-2) {
+            border-left: 1px solid black;
+        }
+
+    table.board tr:nth-child(3n-3) td {
+        border-bottom: 1px solid black;
+    }
+
+    table.board tr:nth-child(3n-2) td {
+        border-top: 1px solid black;
+    }
+
+    table.board tr td input {
+        width: 18px;
+        outline: none;
+        border: none;
+    }
