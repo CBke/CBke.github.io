@@ -1,3 +1,8 @@
+
+function add(a, b) {
+    return a + b;
+}
+
 function BoardItem(dimention) {
     var Values = [];
     var Checked = false;
@@ -75,9 +80,43 @@ function Board(dimention) {
 
             Iterations++;
 
-            if (Iterations > 1)
-                throw new Error(Unresolvable);
+            if (Iterations > 1) {
+                for (var crx = 0; crx < 3; crx++)
+                    for (var cry = 0; cry < 3; cry++) {
+                        for (var value = 1 ; value <= this.BoardDimetion() ; value++) {
 
+                            var found = [0, 0, 0];
+
+                            for (var x = 0; x < 3; x++)
+                                for (var y = 0; y < 3; y++)
+                                    if (this.Item(crx * 3 + x, cry * 3 + y).PossibleValues().indexOf(value) > -1)
+                                        found[x] = 1;
+
+                            if (found.reduce(add, 0) == 1) {
+                                Iterations = 0;
+                                for (var y = 0; y < this.BoardDimetion() ; y++)
+                                    if (y < cry * 3 || y > cry * 3 + 2)
+                                        this.Item(crx * 3 + found.indexOf(1), y).RemoveValue(value);
+                            }
+
+                            found = [0, 0, 0];
+
+                            for (var y = 0; y < 3; y++)
+                                for (var x = 0; x < 3; x++)
+                                    if (this.Item(crx * 3 + x, cry * 3 + y).PossibleValues().indexOf(value) > -1)
+                                        found[y] = 1;
+
+                            if (found.reduce(add, 0) == 1) {
+                                Iterations = 0;
+                                for (var x = 0; x < this.BoardDimetion() ; x++)
+                                    if (x < crx * 3 || x > crx * 3 + 2)
+                                        this.Item(x, cry * 3 + found.indexOf(1)).RemoveValue(value);
+                            }
+                        }
+                    }
+                if (Iterations > 1)
+                    throw new Error(Unresolvable);
+            }
             for (var x = 0 ; x < this.BoardDimetion() ; x++)
                 for (var y = 0 ; y < this.BoardDimetion() ; y++) {
 
